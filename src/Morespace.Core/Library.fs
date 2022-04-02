@@ -1,5 +1,10 @@
-﻿namespace Morespace.Core
+﻿module Morespace.Core.Library
 
-module Say =
-    let hello name =
-        printfn "Hello %s" name
+
+// let encodeToMorse =
+
+// let encodeToWhitespace =
+
+// let decodeWhitespace =
+
+// let decodeMorse =

@@ -1,4 +1,6 @@
-let morseCode =
+module Morespace.Core.MorseCode.Alphabet
+
+let alphaToMorse =
     dict [ ("a", ".-")
            ("b", "-...")
            ("c", "-.-.")
@@ -35,3 +37,8 @@ let morseCode =
            ("8", "---..")
            ("9", "----.")
            ("0", "-----") ]
+
+let morseToAlpha =
+    alphaToMorse
+    |> Seq.map (fun kv -> (kv.Value, kv.Key))
+    |> dict

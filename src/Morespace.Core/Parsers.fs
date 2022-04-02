@@ -52,3 +52,17 @@ let andAlso (first: Parser<'A>) (other: Parser<'B>) : Parser<struct ('A * 'B)> =
     }
 
 
+let rec many (parse: Parser<'A>) : Parser<list<'A>> =
+    parser {
+        let! item = parse
+        let! rest = many parse
+        return (item::rest)
+    } |> orElse (success [])
+
+
+let atLeastOne (parse: Parser<'A>) : Parser<list<'A>> =
+    parser {
+        let! item = parse
+        let! rest = many parse
+        return (item::rest)
+    }

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="MorseCode/Alphabet.fs" />
     <Compile Include="Parsers.fs" />
     <Compile Include="Library.fs" />
   </ItemGroup>
