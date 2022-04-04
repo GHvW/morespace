@@ -1,5 +1,8 @@
 module Morespace.Core.Parsers
 
+open System
+open Morespace.Core.MorseCode.Alphabet
+
 type Parser<'A> = string -> Option<struct ('A * string)>
 
 let zero: Parser<'A> = fun input -> None
@@ -66,3 +69,33 @@ let atLeastOne (parse: Parser<'A>) : Parser<list<'A>> =
         let! rest = many parse
         return (item::rest)
     }
+
+let character (c: char) : Parser<char> =
+    satisfy (fun it -> it = c)
+
+let morse : Parser<char> =
+    satisfy (fun c -> c = '.' || c = '-')
+
+let whiteSpaceMorse : Parser<char> =
+    satisfy (fun c -> c = '\t') |> map (fun _ -> '-')
+    |> orElse (satisfy (fun c -> c = ' ') |> map (fun _ -> '.'))
+
+let asMorseChar : list<char> -> string =
+    List.rev >> String.Concat
+
+let convertMorseToAlpha (morseChar: string) : Option<char> =
+    let mutable alpha = ' '
+    if (morseToAlpha.TryGetValue (morseChar, &alpha)) then
+        Some alpha
+    else
+        None
+
+let morseCharacter : Parser<char> =
+    morse
+    |> many
+    |> bind (fun chars ->
+        let alphaVal = chars |> asMorseChar |> convertMorseToAlpha 
+        match alphaVal with
+        | None -> zero
+        | Some a -> success a)
+    
