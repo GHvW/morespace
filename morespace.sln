@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3DE19B9F-BFB
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Morespace.Core", "src\Morespace.Core\Morespace.Core.fsproj", "{8E8F7A67-F263-4053-95D5-0E9B8185C264}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BF06BC50-CFD8-4C7E-9A36-03424E391D77}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Morespace.Core.Tests", "tests\Morespace.Core.Tests\Morespace.Core.Tests.fsproj", "{EBC5AB72-4821-414F-819B-40F9B98F2877}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +24,13 @@ Global
 		{8E8F7A67-F263-4053-95D5-0E9B8185C264}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E8F7A67-F263-4053-95D5-0E9B8185C264}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E8F7A67-F263-4053-95D5-0E9B8185C264}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBC5AB72-4821-414F-819B-40F9B98F2877}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBC5AB72-4821-414F-819B-40F9B98F2877}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBC5AB72-4821-414F-819B-40F9B98F2877}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBC5AB72-4821-414F-819B-40F9B98F2877}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8E8F7A67-F263-4053-95D5-0E9B8185C264} = {3DE19B9F-BFB3-4938-BE41-6CCE97C7D9BC}
+		{EBC5AB72-4821-414F-819B-40F9B98F2877} = {BF06BC50-CFD8-4C7E-9A36-03424E391D77}
 	EndGlobalSection
 EndGlobal
