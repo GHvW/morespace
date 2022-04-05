@@ -1,4 +1,4 @@
-module Morespace.Core.Parsers
+module Morespace.Core.Parser
 
 open System
 open Morespace.Core.MorseCode.Alphabet
@@ -9,7 +9,7 @@ let zero: Parser<'A> = fun _ -> None
 
 let success (item: 'A) : Parser<'A> = fun input -> Some(item, input)
 
-let orElse (first: Parser<'A>) (other: Parser<'A>) : Parser<'A> =
+let orElse (other: Parser<'A>) (first: Parser<'A>) : Parser<'A> =
     fun input -> first input |> Option.orElse (other input)
 
 let map (fn: 'A -> 'B) (parser: Parser<'A>) : Parser<'B> =
@@ -47,7 +47,7 @@ type ParserBuilder() =
 let parser = ParserBuilder()
 
 
-let andAlso (first: Parser<'A>) (other: Parser<'B>) : Parser<struct ('A * 'B)> =
+let andAlso (other: Parser<'B>) (first: Parser<'A>) : Parser<struct ('A * 'B)> =
     parser {
         let! a = first
         let! b = other
@@ -82,12 +82,28 @@ let character (c: char) : Parser<char> =
 let morse : Parser<char> =
     satisfy (fun c -> c = '.' || c = '-')
 
-let whiteSpaceMorse : Parser<char> =
-    satisfy (fun c -> c = '\t') |> map (fun _ -> '-')
-    |> orElse (satisfy (fun c -> c = ' ') |> map (fun _ -> '.'))
 
-// let asMorseChar : list<char> -> string =
-//     List.rev >> String.Concat
+let whitespace : Parser<char> =
+    satisfy Char.IsWhiteSpace
+
+
+
+let token (parse: Parser<'A>) : Parser<'A> =
+    parser {
+        let! item = parse
+        let! _ = many whitespace
+        return item
+    }
+
+let atLeastOneSeparatedBy (separator: Parser<'B>) (parse: Parser<'A>) : Parser<seq<'A>> =
+    parser {
+        let! item = parse
+        let! rest = many (separator |> bind (fun _ -> parse))
+        return seq {
+            yield item
+            yield! rest
+        }
+    }
 
 let convertMorseToAlpha (morseChar: string) : Option<char> =
     let mutable alpha = ' '
@@ -107,3 +123,12 @@ let morseCharacter : Parser<char> =
         | None -> zero
         | Some a -> success a)
     
+
+let word : Parser<string> =
+    token (morseCharacter 
+           |> atLeastOneSeparatedBy (character ' ') 
+           |> map String.Concat)
+
+let whiteSpaceMorse : Parser<char> =
+    character '\t' |> map (fun _ -> '-')
+    |> orElse (character ' ' |> map (fun _ -> '.'))
