@@ -55,19 +55,25 @@ let andAlso (first: Parser<'A>) (other: Parser<'B>) : Parser<struct ('A * 'B)> =
     }
 
 
-let rec many (parse: Parser<'A>) : Parser<list<'A>> =
+let rec many (parse: Parser<'A>) : Parser<seq<'A>> =
     parser {
         let! item = parse
         let! rest = many parse
-        return (item::rest)
+        return seq {
+            yield item
+            yield! rest
+        }
     } |> orElse (success [])
 
 
-let atLeastOne (parse: Parser<'A>) : Parser<list<'A>> =
+let atLeastOne (parse: Parser<'A>) : Parser<seq<'A>> =
     parser {
         let! item = parse
         let! rest = many parse
-        return (item::rest)
+        return seq {
+            yield item
+            yield! rest
+        }
     }
 
 let character (c: char) : Parser<char> =
@@ -80,8 +86,8 @@ let whiteSpaceMorse : Parser<char> =
     satisfy (fun c -> c = '\t') |> map (fun _ -> '-')
     |> orElse (satisfy (fun c -> c = ' ') |> map (fun _ -> '.'))
 
-let asMorseChar : list<char> -> string =
-    List.rev >> String.Concat
+// let asMorseChar : list<char> -> string =
+//     List.rev >> String.Concat
 
 let convertMorseToAlpha (morseChar: string) : Option<char> =
     let mutable alpha = ' '
@@ -94,7 +100,7 @@ let morseCharacter : Parser<char> =
     morse
     |> many
     |> bind (fun chars ->
-        let alphaVal = chars |> asMorseChar |> convertMorseToAlpha 
+        let alphaVal = chars |> String.Concat |> convertMorseToAlpha 
         match alphaVal with
         | None -> zero
         | Some a -> success a)
