@@ -4,6 +4,8 @@ open System
 open System.Collections.Generic
 open Morespace.Core.MorseCode.Alphabet
 
+// Overkill? Maybe. Fun? Absolutely!
+
 type Parser<'A> = string -> Option<struct ('A * string)>
 
 let zero: Parser<'A> = fun _ -> None
