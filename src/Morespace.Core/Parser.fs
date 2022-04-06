@@ -1,6 +1,7 @@
 module Morespace.Core.Parser
 
 open System
+open System.Collections.Generic
 open Morespace.Core.MorseCode.Alphabet
 
 type Parser<'A> = string -> Option<struct ('A * string)>
@@ -87,6 +88,9 @@ let whitespace : Parser<char> =
     satisfy Char.IsWhiteSpace
 
 
+let space : Parser<char> =
+    satisfy (fun it -> it <> ' ' && Char.IsWhiteSpace(it))
+
 
 let token (parse: Parser<'A>) : Parser<'A> =
     parser {
@@ -129,6 +133,12 @@ let word : Parser<string> =
            |> atLeastOneSeparatedBy (character ' ') 
            |> map String.Concat)
 
+
+let morseCode : Parser<string> =
+    atLeastOne word |> map (String.concat " ")
+
+
 let whiteSpaceMorse : Parser<char> =
     character '\t' |> map (fun _ -> '-')
     |> orElse (character ' ' |> map (fun _ -> '.'))
+

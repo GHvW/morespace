@@ -12,17 +12,22 @@ let ``My test`` () = Assert.True(true)
 
 type ``Given a sequence of dots and dashes``() =
 
+    let dds =
+        ".... . .-.. .-.. ---\t.-- --- .-. .-.. -.." // hello world
+
     [<Fact>]
     member it.``when parsing a single character``() =
-        let dds = "...- "
-        let struct (result, rest) = Option.get (Parser.morseCharacter dds)
-        result |> should equal 'v'
-        rest |> should equal " "
+        let struct (result, _) = Option.get (Parser.morseCharacter dds)
+        result |> should equal 'h'
 
     [<Fact>]
     member it.``when parsing a word``() =
-        let dds =
-            ".... . .-.. .-.. ---\t.-- --- .-. .-.. .--" // hello world
 
-        let struct (result, rest) = Option.get (Parser.word dds)
+        let struct (result, _) = Option.get (Parser.word dds)
         result |> should equal "hello"
+
+    [<Fact>]
+    member it.``when parsing a sentence``() =
+        let struct (result, rest) = Option.get (Parser.morseCode dds)
+        result |> should equal "hello world"
+        rest |> should equal ""
