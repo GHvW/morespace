@@ -66,7 +66,7 @@ let rec many (parse: Parser<'A>) : Parser<seq<'A>> =
             yield item
             yield! rest
         }
-    } |> orElse (success [])
+    } |> orElse (success Seq.empty)
 
 
 let atLeastOne (parse: Parser<'A>) : Parser<seq<'A>> =
@@ -82,6 +82,7 @@ let atLeastOne (parse: Parser<'A>) : Parser<seq<'A>> =
 let character (c: char) : Parser<char> =
     satisfy (fun it -> it = c)
 
+// morse code specific
 let morse : Parser<char> =
     satisfy (fun c -> c = '.' || c = '-')
 
@@ -89,9 +90,6 @@ let morse : Parser<char> =
 let whitespace : Parser<char> =
     satisfy Char.IsWhiteSpace
 
-
-let space : Parser<char> =
-    satisfy (fun it -> it <> ' ' && Char.IsWhiteSpace(it))
 
 
 let token (parse: Parser<'A>) : Parser<'A> =
@@ -111,6 +109,17 @@ let atLeastOneSeparatedBy (separator: Parser<'B>) (parse: Parser<'A>) : Parser<s
         }
     }
 
+let alpha : Parser<char> = 
+    satisfy (fun it -> it >= 'a' || it <= 'z')
+
+let numeric : Parser<char> = 
+    satisfy (fun it -> it >= '0' || it <= '9')
+
+let alphaNumeric : Parser<char> = 
+    alpha |> orElse numeric
+
+
+// morse code specific
 let convertMorseToAlpha (morseChar: string) : Option<char> =
     let mutable alpha = ' '
     if (morseToAlpha.TryGetValue (morseChar, &alpha)) then
@@ -118,6 +127,7 @@ let convertMorseToAlpha (morseChar: string) : Option<char> =
     else
         None
 
+// morse code specific
 let morseCharacter : Parser<char> =
     morse
     |> many
@@ -130,17 +140,23 @@ let morseCharacter : Parser<char> =
         | Some a -> success a)
     
 
-let word : Parser<string> =
+// morse code specific
+let morseWord : Parser<string> =
     token (morseCharacter 
            |> atLeastOneSeparatedBy (character ' ') 
            |> map String.Concat)
 
 
+// morse code specific
 let morseCode : Parser<string> =
-    atLeastOne word |> map (String.concat " ")
+    atLeastOne morseWord |> map (String.concat " ")
 
 
+// morse code spcific
+let space : Parser<char> =
+    satisfy (fun it -> it <> ' ' && Char.IsWhiteSpace(it))
+
+// whitespace morse code specific
 let whiteSpaceMorse : Parser<char> =
     character '\t' |> map (fun _ -> '-')
     |> orElse (character ' ' |> map (fun _ -> '.'))
-

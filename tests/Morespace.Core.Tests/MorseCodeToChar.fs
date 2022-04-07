@@ -23,7 +23,7 @@ type ``Given a sequence of dots and dashes``() =
     [<Fact>]
     member it.``when parsing a word``() =
 
-        let struct (result, _) = Option.get (Parser.word dds)
+        let struct (result, _) = Option.get (Parser.morseWord dds)
         result |> should equal "hello"
 
     [<Fact>]

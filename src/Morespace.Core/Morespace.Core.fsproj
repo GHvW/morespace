@@ -8,6 +8,7 @@
   <ItemGroup>
     <Compile Include="MorseCode/Alphabet.fs" />
     <Compile Include="Parser.fs" />
+    <Compile Include="MorseCode/Morse.fs" />
     <Compile Include="Library.fs" />
   </ItemGroup>
 
