@@ -38,6 +38,7 @@ let alphaToMorse =
            ('9', "----.")
            ('0', "-----") ]
 
+
 let morseToAlpha =
     alphaToMorse
     |> Seq.map (fun kv -> (kv.Value, kv.Key))

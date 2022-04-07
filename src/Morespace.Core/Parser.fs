@@ -8,12 +8,16 @@ open Morespace.Core.MorseCode.Alphabet
 
 type Parser<'A> = string -> Option<struct ('A * string)>
 
+
 let zero: Parser<'A> = fun _ -> None
+
 
 let success (item: 'A) : Parser<'A> = fun input -> Some(item, input)
 
+
 let orElse (other: Parser<'A>) (first: Parser<'A>) : Parser<'A> =
     fun input -> first input |> Option.orElse (other input)
+
 
 let map (fn: 'A -> 'B) (parser: Parser<'A>) : Parser<'B> =
     fun input ->
@@ -25,6 +29,7 @@ let bind (fn: 'A -> Parser<'B>) (parser: Parser<'A>) : Parser<'B> =
     fun input ->
         parser input
         |> Option.bind (fun struct (item, rest) -> fn item rest)
+
 
 let item : Parser<char> =
     fun input ->
@@ -41,6 +46,7 @@ let satisfy (predicate: char -> bool) : Parser<char> =
         else
             zero)
         item
+
 
 type ParserBuilder() =
     member this.Zero() = zero
@@ -79,8 +85,10 @@ let atLeastOne (parse: Parser<'A>) : Parser<seq<'A>> =
         }
     }
 
+
 let character (c: char) : Parser<char> =
     satisfy (fun it -> it = c)
+
 
 // morse code specific
 let morse : Parser<char> =
@@ -99,6 +107,7 @@ let token (parse: Parser<'A>) : Parser<'A> =
         return item
     }
 
+
 let atLeastOneSeparatedBy (separator: Parser<'B>) (parse: Parser<'A>) : Parser<seq<'A>> =
     parser {
         let! item = parse
@@ -109,11 +118,14 @@ let atLeastOneSeparatedBy (separator: Parser<'B>) (parse: Parser<'A>) : Parser<s
         }
     }
 
+
 let alpha : Parser<char> = 
     satisfy (fun it -> it >= 'a' || it <= 'z')
 
+
 let numeric : Parser<char> = 
     satisfy (fun it -> it >= '0' || it <= '9')
+
 
 let alphaNumeric : Parser<char> = 
     alpha |> orElse numeric
@@ -126,6 +138,7 @@ let convertMorseToAlpha (morseChar: string) : Option<char> =
         Some alpha
     else
         None
+
 
 // morse code specific
 let morseCharacter : Parser<char> =
@@ -155,6 +168,7 @@ let morseCode : Parser<string> =
 // morse code spcific
 let space : Parser<char> =
     satisfy (fun it -> it <> ' ' && Char.IsWhiteSpace(it))
+
 
 // whitespace morse code specific
 let whiteSpaceMorse : Parser<char> =
