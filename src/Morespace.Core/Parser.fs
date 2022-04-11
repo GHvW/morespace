@@ -145,9 +145,9 @@ let morseCharacter : Parser<char> =
     morse
     |> many
     |> bind (fun chars ->
-        printfn "%A" chars
+        // printfn "%A" chars
         let alphaVal = chars |> String.Concat |> convertMorseToAlpha 
-        printfn "%A" alphaVal
+        // printfn "%A" alphaVal
         match alphaVal with
         | None -> zero
         | Some a -> success a)
