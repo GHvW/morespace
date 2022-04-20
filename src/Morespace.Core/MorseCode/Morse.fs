@@ -17,6 +17,33 @@ let charToMorse (c: char) : Option<string> =
         None
 
 
+let traverse (it: seq<Option<'A>>) : Option<list<'A>> =
+    let rec inner result rest =
+        if Seq.isEmpty rest then
+            Some result
+        else
+            match (Seq.head rest) with 
+            | None -> None
+            | Some item ->
+                inner (item::result) (Seq.tail rest)
+                
+    inner [] it
 
-let encode text = 
-    atLeastOne (word |> map (Seq.map charToMorse)) |> map (Seq)
+
+let private charsToMorse: seq<char> -> Option<list<string>> = 
+    (Seq.map charToMorse) >> traverse
+
+
+// TODO - spacing
+let private convertToMorse: seq<seq<char>> -> Option<string> = 
+    (Seq.map charsToMorse) 
+    >> traverse 
+    >> (Option.map (List.concat >> (String.concat " ")))
+
+
+let encode text =
+    text
+    |> (atLeastOne word |> map convertToMorse)
+    |> Option.bind (fun struct (encodedData, _) ->
+        encodedData)
+    
