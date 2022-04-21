@@ -120,11 +120,11 @@ let atLeastOneSeparatedBy (separator: Parser<'B>) (parse: Parser<'A>) : Parser<s
 
 
 let alpha : Parser<char> = 
-    satisfy (fun it -> it >= 'a' || it <= 'z')
+    satisfy (fun it -> it >= 'a' && it <= 'z')
 
 
 let numeric : Parser<char> = 
-    satisfy (fun it -> it >= '0' || it <= '9')
+    satisfy (fun it -> it >= '0' && it <= '9')
 
 
 let alphaNumeric : Parser<char> = 
