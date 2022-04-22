@@ -17,7 +17,8 @@ let charToMorse (c: char) : Option<string> =
         None
 
 
-let traverse (it: seq<Option<'A>>) : Option<list<'A>> =
+// TODO - use a queue? or C# List ?
+let traverse (it: seq<Option<'A>>) : Option<list<'A>> = 
     let rec inner result rest =
         if Seq.isEmpty rest then
             Some result
@@ -36,9 +37,9 @@ let private charsToMorse: seq<char> -> Option<list<string>> =
 
 // TODO - spacing
 let private convertToMorse: seq<seq<char>> -> Option<string> = 
-    (Seq.map charsToMorse) 
+    (Seq.map (charsToMorse >> Option.map (List.rev >> String.concat " ")))
     >> traverse 
-    >> (Option.map (List.concat >> (String.concat " ")))
+    >> (Option.map (List.rev >> (String.concat "\t")))
 
 
 let encode text =
