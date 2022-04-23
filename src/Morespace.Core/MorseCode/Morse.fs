@@ -42,9 +42,11 @@ let private convertToMorse: seq<seq<char>> -> Option<string> =
     >> (Option.map (List.rev >> (String.concat "\t")))
 
 
-let encode text =
-    text
-    |> (atLeastOne word |> map convertToMorse)
-    |> Option.bind (fun struct (encodedData, _) ->
-        encodedData)
+let encoder: Parser<Option<string>> =
+    (atLeastOne word |> map convertToMorse)
+
+
+let private structFst struct (data, _) = data
     
+
+let encode = encoder >> (Option.bind structFst)
