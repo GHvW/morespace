@@ -8,18 +8,27 @@ module Morespace.Core.WhitespaceMorse.Whitespace
 open Morespace.Core.MorseCode
 open Morespace.Core
 
-let morseConvert morseChar =
+let morseCharToWhitespace (morseChar: char) : string =
     match morseChar with
     | '.' -> " "
     | '-' -> "   " // 3 spaces
-    | ' ' -> "\t"
+    | ' ' -> "\t\t\t"
     | '\t' -> "\t\t\t\t\t\t\t" // 7 tabs
-    | _ -> "This shouldn't happen" // TODO - refactor to DU to get rid of this?
+    | _ -> " ERROR " // TODO - refactor to DU to get rid of this?
 
 
 
-// let morseToWhitespace =
-//     encoder
+let morseWordToWhitespace (morseWord: string) : string =
+    morseWord.Split(' ')
+    |> Seq.map (
+        Seq.map morseCharToWhitespace
+        >> String.concat "\t"
+    )
+    |> String.concat "\t\t\t"
 
 
-// let whitespaceToMorse = 
+
+let morseToWhitespace (morsePhrase: string) =
+    morsePhrase.Split('\t')
+    |> Seq.map (morseWordToWhitespace)
+    |> String.concat "\t\t\t\t\t\t\t"
